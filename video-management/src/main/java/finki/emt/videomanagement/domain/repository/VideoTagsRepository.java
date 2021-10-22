@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface VideoTagsRepository extends JpaRepository<TagVideos, TagId> {
-    List<TagVideos> findAllByTagId(TagId name);
+    List<TagVideos> findAllByTagName(String name);
 }

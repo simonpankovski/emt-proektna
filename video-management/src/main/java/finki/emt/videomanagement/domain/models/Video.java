@@ -1,5 +1,6 @@
 package finki.emt.videomanagement.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import finki.emt.sharedkernel.domain.base.AbstractEntity;
 import finki.emt.videomanagement.domain.valueobjects.Dislikes;
 import finki.emt.videomanagement.domain.valueobjects.Likes;

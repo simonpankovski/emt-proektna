@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 @Service
 @Transactional
@@ -23,6 +24,11 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public Optional<Video> findByName(String name) {
         return videoRepository.findVideoByName(name);
+    }
+
+    @Override
+    public List<Video> getAll() {
+        return videoRepository.findAll();
     }
 
     @Override

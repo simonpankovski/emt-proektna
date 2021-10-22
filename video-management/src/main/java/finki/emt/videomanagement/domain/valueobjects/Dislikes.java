@@ -9,24 +9,22 @@ import java.util.*;
 @Embeddable
 @Getter
 public class Dislikes implements ValueObject {
-    @ElementCollection(targetClass=UserId.class)
-    private Set<UserId> dislikes;
+
+    private int dislikes;
     public Dislikes(){
-        this.dislikes= new HashSet<>();
-    }
-    public Dislikes(Set<UserId> users){
-        this.dislikes = users;
-    }
-    public int increment(UserId user){
-        this.dislikes.add(user);
-        return this.dislikes.size();
+        this.dislikes= 0;
     }
 
-    public int decrement(UserId user){
-        this.dislikes.remove(user);
-        return this.dislikes.size();
+    public int increment(){
+
+        return ++this.dislikes;
+    }
+
+    public int decrement(){
+        return --this.dislikes;
+
     }
     public int count(){
-        return this.dislikes.size();
+        return this.dislikes;
     }
 }

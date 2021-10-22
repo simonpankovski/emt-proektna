@@ -9,14 +9,18 @@ import finki.emt.videomanagement.domain.valueobjects.VideoName;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin
 public class VideoController {
 
     private final StorageService storageService;
@@ -36,15 +40,29 @@ public class VideoController {
         Optional<Video> video = videoService.findById(id);
         return video.orElse(null);
     }
-    @PostMapping("/tag/{tag}/video/{id}")
-    public List<TagVideos> setTag(@PathVariable TagId tag, @PathVariable VideoId id){
-        Optional<Video> video = videoService.findById(id);
+
+    @GetMapping("/videos")
+    public List<String> getVideos(){
+
+        List<Video> videos = videoService.getAll();
+        List<String> paths = new ArrayList<>();
+        for (Video video:videos
+             ) {
+            paths.add(video.getName());
+
+        }
+
+        return paths;
+    }
+    @PostMapping("/tag/{tag}/video/{name}")
+    public List<TagVideos> setTag(@PathVariable String tag, @PathVariable String name){
+        Optional<Video> video = videoService.findByName(name);
         Video temp = video.get();
-        Optional<Tag> t = tagRepository.findById(tag);
+        Optional<Tag> t = tagRepository.findByName(tag);
         Tag tem = t.get();
         temp.addTag(tem);
         videoService.saveVideo(temp);
-        return videoTagsRepository.findAllByTagId(tag);
+        return videoTagsRepository.findAllByTagName(tag);
     }
     @PostMapping("/tag")
     public void saveTag(@RequestBody String name){
@@ -64,19 +82,19 @@ public class VideoController {
     }
 
     @PostMapping("/")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam String video) throws IOException {
+    public RedirectView handleFileUpload(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
+        String video = request.getParameter("video");
+        RedirectView redirectView = new RedirectView();
         if(videoService.findByName(video).isEmpty()) {
             Video video1 = new Video(video);
             String res = storageService.store(file, video1.getName());
             video1.setLocation(res);
             videoService.saveVideo(video1);
-            return res;
+            redirectView.setUrl("http://localhost:3000/");
+            return redirectView;
         }
-
-
-
-
-        return "Video exists";
+        redirectView.setUrl("http://localhost:3000/new");
+        return redirectView;
 
     }
 
